@@ -1,3 +1,13 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+
 body {
   margin: 0;
 }
@@ -12,4 +22,28 @@ body {
   border: 1px solid black;
   width: 40px;
   height: 40px;
+}
+
+.grid-color {
+  background-color: blue;
+}
+
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
+  border: 1px solid blue;
+  height: 100px;
+}
+
+.generate-grid {
+  font-size: 16px;
+  height: 40px;
+  width: 140px;
+  border-radius: 7px;
+}
+
+.generate-grid:hover {
+  background-color: aqua;
 }
