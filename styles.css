@@ -24,7 +24,6 @@ body {
   flex-direction: column;
   width: 600px;
   height: 600px;
-  border: 1px solid black;
 }
 
 .row {
@@ -34,7 +33,14 @@ body {
 }
 
 .column {
-  border: 1px solid red;;
   display: flex;
   flex: 1;
+}
+
+.left {
+  border: 1px solid blue;
+}
+
+.cell-hover {
+  background-color: rgb(214, 21, 21);
 }
