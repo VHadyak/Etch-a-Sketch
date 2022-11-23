@@ -40,10 +40,12 @@ body {
 }
 
 .left {
-  border: 1px solid blue;
+  border: 1px solid rgb(23, 23, 26);
   margin-right: 20px;
 }
 
-.cell-hover {
-  background-color: rgb(214, 21, 21);
+.colors {
+  display: flex;
+  flex-direction: column;
 }
+

@@ -1,9 +1,10 @@
 
 const gridContainer = document.querySelector(".grid-container");
-const gridBtn = document.querySelector(".generate-grid");
 const slider = document.querySelector("#range")
 const value = document.querySelector("#value");
 const resetBtn = document.querySelector(".reset");
+const colorBtn = document.querySelectorAll(".colorBtn");
+const greenColor = document.querySelector("#green");
 
 createGrid = () => {
   let userInput = slider.value;
@@ -27,13 +28,48 @@ createGrid = () => {
 
   resetBtn.addEventListener("click", () => {
     gridCells.forEach((cell) => {
-      cell.classList.remove("cell-hover");
+      cell.classList.remove("cell-hover", "red-hover", "blue-hover", "green-hover", "rainbow-hover");
+      cell.style.backgroundColor = "";
     });
   });
-  
+
   gridCells.forEach((cell) => {
     cell.addEventListener("mouseover", () => {
       cell.classList.add("cell-hover");
+      cell.style.backgroundColor = "rgb(23, 22, 31)";
+    });
+  });
+  
+  colorBtn.forEach((color) => {
+    color.addEventListener("click", (e) => {
+      gridCells.forEach((cell) => {
+        cell.addEventListener("mouseover", () => {     
+          let colorPick = e.target.id;
+          let randomColor = Math.floor(Math.random() * 16777215).toString(16);            
+
+          switch (colorPick) {
+            case "red":
+              cell.classList.add("red-hover");
+              cell.style.backgroundColor = "red";
+              break;
+            case "blue":
+              cell.classList.add("blue-hover");
+              cell.style.backgroundColor = "blue";
+              break;
+            case "green":
+              cell.classList.add("green-hover");
+              cell.style.backgroundColor = "green";
+              break;
+            case "rainbow":
+              cell.classList.add("rainbow-hover");
+              cell.style.backgroundColor = "#" + randomColor;
+              break;
+            case "default":
+              cell.style.backgroundColor = "rgb(23, 22, 31)";
+              break;
+          };         
+        });
+      });
     });
   });
 };
@@ -42,6 +78,3 @@ createGrid();
 slider.addEventListener("change", () => {
   createGrid();
 });
-
-
-
