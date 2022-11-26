@@ -1,13 +1,14 @@
-// Etch a Sketch by Vlad Hadyak
+// Etch a Sketch by Vlad Hadyak (using flex-box layout instead of grid)
 
 const gridContainer = document.querySelector(".grid-container");
 const slider = document.querySelector("#range")
 const value = document.querySelector("#value");
 const resetBtn = document.querySelector(".reset");
 const colorBtn = document.querySelectorAll(".colorBtn");
+const eraserBtn = document.querySelector("#eraser");
 
 const customColor = document.querySelector("#custom-color-picker");
-const defaultColor = "#ff0000";
+const defaultColor = "#00DDFF";
 
 customColor.value = defaultColor;
 customColor.select();
@@ -29,7 +30,6 @@ createGrid = () => {
     gridContainer.appendChild(column);
   };
   document.body.appendChild(gridContainer);
-
 
   const gridCells = document.querySelectorAll(".row");
   
@@ -64,6 +64,17 @@ createGrid = () => {
     });
   };
   createCustomColor();
+
+  createEraser = () => {
+    eraserBtn.addEventListener("click", () => { 
+      gridCells.forEach((cell) => {
+        cell.addEventListener("mouseover", () => {
+          cell.style.backgroundColor = "";
+        });
+      });
+    });
+  };
+  createEraser();
 
   createColors = () => {
     colorBtn.forEach((color) => {
