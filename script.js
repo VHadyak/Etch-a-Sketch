@@ -1,6 +1,7 @@
 // Etch a Sketch by Vlad Hadyak (using flex-box layout instead of grid)
 
 const gridContainer = document.querySelector(".grid-container");
+const contentContainer = document.querySelector(".content-container");
 const slider = document.querySelector("#range")
 const value = document.querySelector("#value");
 const resetBtn = document.querySelector(".reset");
@@ -8,16 +9,18 @@ const colorBtn = document.querySelectorAll(".colorBtn");
 const eraserBtn = document.querySelector("#eraser");
 
 const customColor = document.querySelector("#custom-color-picker");
-const defaultColor = "#00DDFF";
+const defaultColor = "#d9ff00";                                                             // Default color of the color picker
 
 customColor.value = defaultColor;
 customColor.select();
 
 createGrid = () => {
-  let userInput = slider.value;
-  gridContainer.textContent = "";
+  let userInput = slider.value;    
+  slider.oninput = createGrid;
+                                                                                            // Displays the grid size based on the value on the slider
+  gridContainer.textContent = "";                                                           // Remove the previous grid after new grid has been selected by a user
   
-  value.textContent = `Pixel size: ${userInput}x${userInput}`;           
+  value.textContent = `Grid size: ${userInput}x${userInput}`;           
   for (let i = 0; i < userInput; i++) {
     const column = document.createElement("div");
     column.classList.add("column");
@@ -29,14 +32,14 @@ createGrid = () => {
     };
     gridContainer.appendChild(column);
   };
-  document.body.appendChild(gridContainer);
+  contentContainer.appendChild(gridContainer);                                             
 
   const gridCells = document.querySelectorAll(".row");
   
   resetGrid = () => {
     resetBtn.addEventListener("click", () => {
       gridCells.forEach((cell) => {
-        cell.classList.remove("cell-hover", "red-hover", "blue-hover", "green-hover", "rainbow-hover", "custom-color-hover");
+        cell.classList.remove("cell-hover", "rainbow-hover", "custom-color-hover");
         cell.style.backgroundColor = "";
       });
     });
@@ -47,7 +50,7 @@ createGrid = () => {
     gridCells.forEach((cell) => {
       cell.addEventListener("mouseover", () => {
         cell.classList.add("cell-hover");
-        cell.style.backgroundColor = "rgb(61, 61, 66)";
+        cell.style.backgroundColor = "rgb(30, 11, 58)";
       });
     });
   };
@@ -81,24 +84,16 @@ createGrid = () => {
       color.addEventListener("click", (e) => {
         gridCells.forEach((cell) => {
           cell.addEventListener("mouseover", () => {     
-            let colorPick = e.target.id;
-            let randomColor = Math.floor(Math.random() * 16777215).toString(16);            
+            let colorPick = e.target.id;                                                    // Selects the id of the button, and chooses the correct option based on that id
+            let randomColor = Math.floor(Math.random() * 16777215).toString(16);            // Randomizes the colors to create a 'rainbow button' option   
 
             switch (colorPick) {
-              case "red":
-                cell.classList.add("red-hover");
-                cell.style.backgroundColor = "red";
-                break;
-              case "blue":
-                cell.classList.add("blue-hover");
-                cell.style.backgroundColor = "blue";
-                break;
               case "rainbow":
                 cell.classList.add("rainbow-hover");
                 cell.style.backgroundColor = "#" + randomColor;
                 break;
               case "default":
-                cell.style.backgroundColor = "rgb(61, 61, 66)";
+                cell.style.backgroundColor = "rgb(30, 11, 58)";
                 break;
             };         
           });
@@ -113,3 +108,4 @@ createGrid();
 slider.addEventListener("change", () => {
   createGrid();
 });
+
