@@ -8,16 +8,23 @@ const resetBtn = document.querySelector(".reset");
 const colorBtn = document.querySelectorAll(".colorBtn");
 const eraserBtn = document.querySelector("#eraser");
 
+const defaultColor = document.querySelector("#default");
+const rainbowColor = document.querySelector("#rainbow");
 const customColor = document.querySelector("#custom-color-picker");
-const defaultColor = "#d9ff00";                                                             // Default color of the color picker
+const defaultColorPicker = "#d9ff00";                                                       // Default color of the color picker
 
-customColor.value = defaultColor;
+customColor.value = defaultColorPicker;
 customColor.select();
 
+let mouseDown = false;
+
+let customEnabled = true;
+let defEnabled = true;
+let rainbowEnabled = true;
+
 createGrid = () => {
-  let userInput = slider.value;    
-  slider.oninput = createGrid;
-                                                                                            // Displays the grid size based on the value on the slider
+  let userInput = slider.value;                                                             // Displays the grid size based on the value on the slider
+  slider.oninput = createGrid;                                                                                    
   gridContainer.textContent = "";                                                           // Remove the previous grid after new grid has been selected by a user
   
   value.textContent = `Grid size: ${userInput}x${userInput}`;           
@@ -32,10 +39,13 @@ createGrid = () => {
     };
     gridContainer.appendChild(column);
   };
-  contentContainer.appendChild(gridContainer);                                             
+  contentContainer.appendChild(gridContainer);
+};
+createGrid();                                             
 
+createToolbox = () => {
   const gridCells = document.querySelectorAll(".row");
-  
+
   resetGrid = () => {
     resetBtn.addEventListener("click", () => {
       gridCells.forEach((cell) => {
@@ -46,66 +56,178 @@ createGrid = () => {
   };
   resetGrid();
 
+  // Add a Default Color (no button) and draw only when the mouse is clicked and held down
+
   createDefColor = () => {
     gridCells.forEach((cell) => {
-      cell.addEventListener("mouseover", () => {
-        cell.classList.add("cell-hover");
-        cell.style.backgroundColor = "rgb(30, 11, 58)";
+      cell.addEventListener("mousedown", (e) => {
+        if (defEnabled) {
+          mouseDown = true;
+          customEnabled = false;
+          rainbowEnabled = false;
+          e.target.style.backgroundColor = "rgb(30, 11, 58)";
+        };
       });
     });
+  
+    gridCells.forEach((cell) => {
+      cell.addEventListener("mouseup", () => {
+        mouseDown = false;
+      });
+    });
+
+    gridContainer.addEventListener("mouseleave", () => {                                    // Makes sure mouse doesn't automatically hover over grid cells when it enters a grid container, after it already left the grid container with mouse pressed down
+      mouseDown = false;
+    });
+
+    mousemoveHandler = () => {
+      gridCells.forEach((cell) => {
+        cell.addEventListener("mouseenter", (e) => {
+          if (mouseDown) {
+            let target = e.target; 
+    
+            if (target.matches("div")) {
+              target.classList.add("cell-hover");
+              target.style.backgroundColor = "rgb(30, 11, 58)";
+            };
+          };
+        });
+      });
+    };
+    mousemoveHandler();
   };
   createDefColor();
 
+  defaultColor.addEventListener("click", () => {
+    createDefColor();
+    rainbowEnabled = false;
+    defEnabled = true;
+  });
+
+  // Add a Color Picker
+
   createCustomColor = () => {
     customColor.addEventListener("change", (e) => {
-      gridCells.forEach((cell) => {
-        cell.addEventListener("mouseover", () => {
+    gridCells.forEach((cell) => {
+      cell.addEventListener("mousedown", () => {
+        if (customEnabled ) {
+          mouseDown = true;
           cell.classList.add("custom-color-hover");
           cell.style.backgroundColor = e.target.value;
+        };
         });
       });
     });
-  };
-  createCustomColor();
 
-  createEraser = () => {
-    eraserBtn.addEventListener("click", () => { 
-      gridCells.forEach((cell) => {
-        cell.addEventListener("mouseover", () => {
-          cell.style.backgroundColor = "";
-        });
+    gridCells.forEach((cell) => {
+      cell.addEventListener("mouseup", () => {
+        mouseDown = false;
       });
     });
-  };
-  createEraser();
-
-  createColors = () => {
-    colorBtn.forEach((color) => {
-      color.addEventListener("click", (e) => {
+    
+    mousemoveHandler = () => {
+      customColor.addEventListener("change", (e) => {
         gridCells.forEach((cell) => {
-          cell.addEventListener("mouseover", () => {     
-            let colorPick = e.target.id;                                                    // Selects the id of the button, and chooses the correct option based on that id
-            let randomColor = Math.floor(Math.random() * 16777215).toString(16);            // Randomizes the colors to create a 'rainbow button' option   
-
-            switch (colorPick) {
-              case "rainbow":
-                cell.classList.add("rainbow-hover");
-                cell.style.backgroundColor = "#" + randomColor;
-                break;
-              case "default":
-                cell.style.backgroundColor = "rgb(30, 11, 58)";
-                break;
-            };         
+          cell.addEventListener("mouseenter", () => {
+          if (mouseDown) {
+            if (cell.matches("div")) {
+              cell.classList.add("custom-color-hover");
+              cell.style.backgroundColor = e.target.value;
+            };
+            };
           });
         });
       });
-    });
+      customEnabled = true;
+      rainbowEnabled = false;
+      defEnabled = false;
+    };
+    mousemoveHandler();
   };
-  createColors();
+  customColor.addEventListener("input", createCustomColor);
+
+  // Add an Eraser 
+
+  createEraser = () => {
+    gridCells.forEach((cell) => {
+      cell.addEventListener("mousedown", (e) => {
+        mouseDown = true;
+        e.target.style.backgroundColor = "";
+        e.target.classList.remove("cell-hover", "rainbow-hover", "custom-color-hover");
+      });
+    });
+
+    gridCells.forEach((cell) => {
+      cell.addEventListener("mouseup", () => {
+        mouseDown = false;
+      });
+    });
+
+    mousemoveHandler = () => {
+      gridCells.forEach((cell) => {
+        cell.addEventListener("mouseenter", (e) => {
+          if (mouseDown) {
+            let target = e.target;
+
+            if (target.matches("div")) {
+              target.style.backgroundColor = "";
+              target.classList.remove("cell-hover", "rainbow-hover", "custom-color-hover");
+            };
+          };
+        });
+      });
+    };
+    mousemoveHandler();   
+  };
+  eraserBtn.addEventListener("click", createEraser);
+
+  // Add a Rainbow Color
+
+  chooseRainbow = () => {
+    gridCells.forEach((cell) => {
+      cell.addEventListener("mousedown", (e) => {
+        if (rainbowEnabled) {
+          mouseDown = true;
+          let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+          e.target.style.backgroundColor = "#" + randomColor;                                                  
+        }; 
+      });
+    });
+  
+    gridCells.forEach((cell) => {
+      cell.addEventListener("mouseup", () => {
+        mouseDown = false;
+      });
+    });
+
+    mousemoveHandler = () => {
+      gridCells.forEach((cell) => {
+        cell.addEventListener("mouseenter", (e) => {
+          if (mouseDown) {
+            let target = e.target;
+            randomColor = Math.floor(Math.random() * 16777215).toString(16);
+             
+            if (target.matches("div")) {
+              target.classList.add("rainbow-hover");
+              target.style.backgroundColor = "#" + randomColor; 
+            };
+          };
+        });  
+      });
+      rainbowEnabled = true;
+      defEnabled = false;
+      customEnabled = false;
+    };
+    mousemoveHandler();
+  };
+  rainbowColor.addEventListener("click", chooseRainbow);                                                                  
 };
-createGrid();
+createToolbox();
 
 slider.addEventListener("change", () => {
+  defEnabled = true;
+  rainbowEnabled = false;
+  customEnabled = false;
   createGrid();
+  createToolbox();
 });
-
