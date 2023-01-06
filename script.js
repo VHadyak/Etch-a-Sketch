@@ -4,17 +4,15 @@ const gridContainer = document.querySelector(".grid-container");
 const contentContainer = document.querySelector(".content-container");
 const slider = document.querySelector("#range")
 const value = document.querySelector("#value");
-const resetBtn = document.querySelector(".reset");
-const colorBtn = document.querySelectorAll(".colorBtn");
-const eraserBtn = document.querySelector("#eraser");
 
+const resetBtn = document.querySelector(".reset");
+const eraserBtn = document.querySelector("#eraser");
 const defaultColor = document.querySelector("#default");
 const rainbowColor = document.querySelector("#rainbow");
 const customColor = document.querySelector("#custom-color-picker");
 const defaultColorPicker = "#d9ff00";                                                       // Default color of the color picker
 
 customColor.value = defaultColorPicker;
-customColor.select();
 
 let mouseDown = false;
 
@@ -22,8 +20,12 @@ let customEnabled = true;
 let defEnabled = true;
 let rainbowEnabled = true;
 
+let defFocus = true;
+let rainbowFocus = true;
+let eraserFocus = true;
+
 createGrid = () => {
-  let userInput = slider.value;                                                             // Displays the grid size based on the value on the slider
+  let userInput = slider.value;                                                             // Displays the grid size based on the value of the slider
   slider.oninput = createGrid;                                                                                    
   gridContainer.textContent = "";                                                           // Remove the previous grid after new grid has been selected by a user
   
@@ -46,6 +48,8 @@ createGrid();
 createToolbox = () => {
   const gridCells = document.querySelectorAll(".row");
 
+  // Resets the grid
+
   resetGrid = () => {
     resetBtn.addEventListener("click", () => {
       gridCells.forEach((cell) => {
@@ -56,11 +60,11 @@ createToolbox = () => {
   };
   resetGrid();
 
-  // Add a Default Color (no button) and draw only when the mouse is clicked and held down
+  // Add a Default Color and draw only when the mouse is clicked and held down (for all colors)
 
   createDefColor = () => {
     gridCells.forEach((cell) => {
-      cell.addEventListener("mousedown", (e) => {
+      cell.addEventListener("mousedown", (e) => {                                           // Allows to highlight the very first cell
         if (defEnabled) {
           mouseDown = true;
           customEnabled = false;
@@ -71,18 +75,18 @@ createToolbox = () => {
     });
   
     gridCells.forEach((cell) => {
-      cell.addEventListener("mouseup", () => {
+      cell.addEventListener("mouseup", () => {                                       
         mouseDown = false;
       });
     });
 
-    gridContainer.addEventListener("mouseleave", () => {                                    // Makes sure mouse doesn't automatically hover over grid cells when it enters a grid container, after it already left the grid container with mouse pressed down
+    gridContainer.addEventListener("mouseleave", () => {                                    // Makes sure mouse doesn't automatically hover over grid cells when it enters a grid container again, after it already left the grid container with mouse pressed down
       mouseDown = false;
     });
 
     mousemoveHandler = () => {
       gridCells.forEach((cell) => {
-        cell.addEventListener("mouseenter", (e) => {
+        cell.addEventListener("mouseenter", (e) => {                                        // Continues to hover over grid cells when mouse is pressed and held
           if (mouseDown) {
             let target = e.target; 
     
@@ -98,23 +102,36 @@ createToolbox = () => {
   };
   createDefColor();
 
-  defaultColor.addEventListener("click", () => {
+  defaultColor.addEventListener("click", (e) => {
     createDefColor();
     rainbowEnabled = false;
     defEnabled = true;
+    if (defFocus) {
+      e.target.style.cssText = "background-color: rgb(28, 18, 105); transform: scale(1.2); transition: 0.1s;";
+      rainbowColor.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+      eraserBtn.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+    };
   });
+
+  // Removes buttons' hover effect
+
+  clearHoverButtonEffect = () => {
+    eraserBtn.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+    defaultColor.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+    rainbowColor.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+  };
 
   // Add a Color Picker
 
   createCustomColor = () => {
     customColor.addEventListener("change", (e) => {
-    gridCells.forEach((cell) => {
-      cell.addEventListener("mousedown", () => {
-        if (customEnabled ) {
-          mouseDown = true;
-          cell.classList.add("custom-color-hover");
-          cell.style.backgroundColor = e.target.value;
-        };
+      gridCells.forEach((cell) => {
+        cell.addEventListener("mousedown", () => {
+          if (customEnabled) {
+            mouseDown = true;
+            cell.classList.add("custom-color-hover");
+            cell.style.backgroundColor = e.target.value;
+          };
         });
       });
     });
@@ -129,11 +146,11 @@ createToolbox = () => {
       customColor.addEventListener("change", (e) => {
         gridCells.forEach((cell) => {
           cell.addEventListener("mouseenter", () => {
-          if (mouseDown) {
-            if (cell.matches("div")) {
-              cell.classList.add("custom-color-hover");
-              cell.style.backgroundColor = e.target.value;
-            };
+            if (mouseDown) {
+              if (cell.matches("div")) {
+                cell.classList.add("custom-color-hover");
+                cell.style.backgroundColor = e.target.value;
+              };
             };
           });
         });
@@ -143,6 +160,7 @@ createToolbox = () => {
       defEnabled = false;
     };
     mousemoveHandler();
+    clearHoverButtonEffect();
   };
   customColor.addEventListener("input", createCustomColor);
 
@@ -179,17 +197,24 @@ createToolbox = () => {
     };
     mousemoveHandler();   
   };
+  eraserBtn.addEventListener("click", (e) => {
+    if (eraserFocus) {
+      e.target.style.cssText = "background-color: rgb(28, 18, 105); transform: scale(1.2); transition: 0.1s;";
+      defaultColor.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+      rainbowColor.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+    };
+  });
   eraserBtn.addEventListener("click", createEraser);
 
   // Add a Rainbow Color
 
-  chooseRainbow = () => {
+  createRainbow = () => {
     gridCells.forEach((cell) => {
       cell.addEventListener("mousedown", (e) => {
         if (rainbowEnabled) {
           mouseDown = true;
-          let randomColor = Math.floor(Math.random() * 16777215).toString(16);
-          e.target.style.backgroundColor = "#" + randomColor;                                                  
+          let randomColor = Math.floor(Math.random() * 16777215).toString(16);              // Generates a random color for each grid cell that is hovered 
+          e.target.style.backgroundColor = "#" + randomColor;                               // Inputs that random color              
         }; 
       });
     });
@@ -220,14 +245,25 @@ createToolbox = () => {
     };
     mousemoveHandler();
   };
-  rainbowColor.addEventListener("click", chooseRainbow);                                                                  
+
+  rainbowColor.addEventListener("click", (e) => {
+    if (rainbowFocus) {
+      e.target.style.cssText = "background-color: rgb(28, 18, 105); transform: scale(1.2); transition: 0.1s;";
+      defaultColor.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+      eraserBtn.style.cssText = 'background-color: ""; transform: ""; transition: "";';
+    };
+  });
+  rainbowColor.addEventListener("click", createRainbow);
 };
 createToolbox();
+
+// Resets toolbox and updates grid when value of the slider changes 
 
 slider.addEventListener("change", () => {
   defEnabled = true;
   rainbowEnabled = false;
   customEnabled = false;
+  clearHoverButtonEffect();
   createGrid();
   createToolbox();
 });
