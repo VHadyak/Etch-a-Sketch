@@ -69,7 +69,7 @@ createToolbox = () => {
           mouseDown = true;
           customEnabled = false;
           rainbowEnabled = false;
-          e.target.style.backgroundColor = "rgb(30, 11, 58)";
+          e.target.style.backgroundColor = "rgb(27, 18, 18)";                               // Licorice shade of black as default color
         };
       });
     });
@@ -92,7 +92,7 @@ createToolbox = () => {
     
             if (target.matches("div")) {
               target.classList.add("cell-hover");
-              target.style.backgroundColor = "rgb(30, 11, 58)";
+              target.style.backgroundColor = "rgb(27, 18, 18)";
             };
           };
         });
