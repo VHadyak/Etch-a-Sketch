@@ -1,4 +1,7 @@
 # Etch-a-Sketch is a small drawing project to practice my DOM manipulation skills and JS in general. (Based on The Odin Project).
+
+## https://vladszn.github.io/Etch-a-Sketch/ ##
+
 ###### I used 'flex-box' method instead of 'grid' to achieve grid with different hovering options and CSS styling. ######
 
 ![Screenshot 2023-01-06 at 20 57 03](https://user-images.githubusercontent.com/108742849/211130701-cbc4fe59-2c79-42a7-89d1-de18b2e79542.jpg)
