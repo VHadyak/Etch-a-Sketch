@@ -4,41 +4,41 @@
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etch A Sketch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Etch-a-Sketch</title>
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
   </head>
 
-<body>
-  <div class="header-container">
-    <div class="header">Etch-a-Sketch</div>
-  </div>
-
-  <div class="content-container">
-    <div class="selections-bar">
-      <div class="colors">
-        <button id="rainbow" class="colorBtn">Rainbow</button>
-        <button id="default" class="colorBtn">Default color</button>
-        <button id="eraser">Eraser</button>
-      </div>
-      <div class="color-picker-container">
-        <label for="custom-color-picker" id="label">Custom color</label>
-        <input type="color" value="#ff0000" id="custom-color-picker">
-      </div>
-      <div class="slider-container">
-        <input type="range" min="1" max="100" value="16" class="slider" id="range">
-        <div id="value">Grid size:</div>
-      </div>
-      <div class="reset-button">
-        <button class="reset">Reset the grid</button>
-      </div>
+  <body>
+    <div class="header-container">
+      <div class="header">Etch-a-Sketch</div>
     </div>
-    <div class="grid-container"></div>
-  </div>
+    
+    <div class="content-container">
+      <div class="options-container">
+        <div class="colors-container">
+          <button class="rainbow">Rainbow</button>
+          <button class="default-color">Default Color</button>
+          <button class="eraser">Eraser</button>
+        </div>
+        <div class="color-picker-container">
+          <label for="color-picker" class="label">Color Picker</label>
+          <input type="color" value="#ff0000" class="color-picker">
+        </div>
+        <div class="slider-container">
+          <input type="range" min="1" max="100" value="16" class="slider">
+          <div class="value">Grid size:</div>
+        </div>
+        <div class="clear-container">
+          <button class="clear-grid">Clear Grid</button>
+        </div>
+      </div>
+      <div class="grid-container"></div>
+    </div>
 
-  <div class="footer-container">
-    <div class="footer">Created by <a href="https://github.com/VladSZN" target="_blank">Vlad Hadyak</a></div>
-  </div>
-</body>
+    <div class="footer-container">
+      <div class="footer">Created by <a href="https://github.com/VladSZN" target="_blank">Vlad Hadyak</a></div>
+    </div>
+  </body>
 </html>
