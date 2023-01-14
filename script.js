@@ -79,7 +79,7 @@ createToolbox = () => {
       });
 
       cell.addEventListener("mouseenter", (e) => {
-        if (mouseDown) {
+        if (e.buttons === 1 && mouseDown) {                                                   // Fix a bug where the cursor drag sometimes will trigger for mouse to hover over cells without clicking the mouse
           let target = e.target;
 
           if (target.matches("div")) {
@@ -121,7 +121,7 @@ createToolbox = () => {
       });
 
       cell.addEventListener("mouseenter", (e) => {
-        if (mouseDown) {
+        if (e.buttons === 1 && mouseDown) {
           let randomColor = Math.floor(Math.random() * 16777215).toString(16);
           
           if (cell.matches("div")) {
@@ -162,7 +162,7 @@ createToolbox = () => {
       });
 
       cell.addEventListener("mouseenter", (e) => {
-        if (mouseDown) {
+        if (e.buttons === 1 && mouseDown) {
           let target = e.target;
 
           if (target.matches("div")) {
@@ -189,13 +189,14 @@ createToolbox = () => {
   // Create a Color picker
  
   createColorPicker = () => {
-    colorPickerBtn.addEventListener("change", (e) => {
+    colorPickerBtn.addEventListener("change", () => {
       gridCells.forEach((cell) => {
         cell.addEventListener("mousedown", () => {
           if (customColorEnabled) {
             mouseDown = true;
+            let color = colorPickerBtn.value;
             cell.classList.add("custom-hover");
-            cell.style.backgroundColor = e.target.value;
+            cell.style.backgroundColor = color;
           };
         });
 
@@ -203,11 +204,13 @@ createToolbox = () => {
           mouseDown = false;
         });
 
-        cell.addEventListener("mouseenter", () => {
-          if (mouseDown) {
+        cell.addEventListener("mouseenter", (e) => {
+          if (e.buttons === 1 && mouseDown) {
+            let color = colorPickerBtn.value;
+
             if (cell.matches("div")) {
               cell.classList.add("custom-hover");
-              cell.style.backgroundColor = e.target.value;
+              cell.style.backgroundColor = color;
             };
           };
         });
